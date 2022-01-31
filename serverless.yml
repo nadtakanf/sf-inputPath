@@ -1,0 +1,30 @@
+service: sf-inputPath
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: dev
+
+functions:
+  hello:
+    handler: handler.hello
+
+stepFunctions:
+  stateMachines:
+    hellostepfunc1:
+      name: myStateMachine-InputPath-${self:provider.stage}
+      definition:
+        Comment: "A Hello World example of the Amazon States Language using an AWS Lambda Function"
+        StartAt: HelloWorld1
+        States:
+          HelloWorld1:
+            Type: Task
+            InputPath: "$.dataset2"
+            Resource:
+              Fn::GetAtt: [hello, Arn]
+            End: true
+
+plugins:
+  - serverless-step-functions
